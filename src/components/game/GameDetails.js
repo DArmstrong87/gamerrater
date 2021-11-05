@@ -5,16 +5,11 @@ import { getGame } from "./GameManager";
 export const GameDetails = () => {
     const { gameId } = useParams()
     const [game, setGame] = useState([])
-    
-    const categories = []
-    for (const category of game.categories){
-        categories.push(category.label)
-    }
 
     useEffect(() => {
         getGame(gameId)
             .then(game => setGame(game))
-    }, [])
+    }, [gameId])
 
     return (<>
         <h2>{game.title}</h2>

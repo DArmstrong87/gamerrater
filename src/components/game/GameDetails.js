@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 import { getGame, getReviews } from "./GameManager";
+import "./GameDetails.css"
 
 export const GameDetails = () => {
     const { gameId } = useParams()
@@ -16,15 +17,19 @@ export const GameDetails = () => {
     }, [gameId])
 
     return (<>
+
         <h2>{game.title}</h2>
-        <p>Designer: {game.designer}</p>
-        <p>Year released: {game.year_released}</p>
-        <p>Number of players: {game.num_players}</p>
-        <p>Estimated time to play: {game.time_to_play}</p>
-        <p>Age recommendation: {game.age}</p>
-        <p>Categories: {game.categories?.map(category => {
+
+        <div className="avgRating">Avg rating: <b>{game.average_rating}</b></div>
+        <div>Designer: {game.designer}</div>
+        <div>Year released: {game.year_released}</div>
+        <div>Number of players: {game.num_players}</div>
+        <div>Estimated time to play: {game.time_to_play}</div>
+        <div>Age recommendation: {game.age}</div>
+        <div>Categories: {game.categories?.map(category => {
             return category.label
-        }).join(", ")}</p>
+        }).join(", ")}</div>
+
         <h3>Reviews</h3>
         {reviews.length === 0 ? `Be the first to write a review of ${game.title}!` : ""}
         {reviews?.map(review => {
@@ -32,6 +37,7 @@ export const GameDetails = () => {
                 "{review.review}" by <u>{review.player.user.first_name} {review.player.user.last_name}</u>
             </p>
         })}
+
         <p>
             <button onClick={() => history.push(`/games/${game.id}/review`)}>
                 Write a review</button>

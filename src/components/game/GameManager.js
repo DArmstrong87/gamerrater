@@ -53,6 +53,16 @@ export const createReview = (newReview) => {
         }
         )
 }
+export const createRating = (newRating) => {
+    return fetch("http://localhost:8000/ratings", {
+        method: "POST",
+        headers: {
+            "Authorization": `Token ${localStorage.getItem("gr_token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(newRating)
+    })
+}
 
 export const getReviews = (gameId) => {
     return fetch(`http://localhost:8000/reviews?gameId=${gameId}`, {

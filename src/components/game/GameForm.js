@@ -20,14 +20,16 @@ export const GameForm = () => {
 
     const changeGameState = (event) => {
         const newGameState = { ...currentGame }
+        // If it's a checkbox and the current array includes the ID that was checked, then remove it from the array.
         if (event.target.name === "categories" && newGameState.categories.includes(parseInt(event.target.value))) {
             const index = newGameState.categories.indexOf(parseInt(event.target.value))
             newGameState[event.target.name].splice(index, 1)
         }
+         // If it's a checkbox, add the ID to the array.
         else if (event.target.name === "categories") {
             newGameState[event.target.name].push(parseInt(event.target.value))
         }
-        else {
+        else { // If it's not a checkbox, set the key:value pair.
             newGameState[event.target.name] = event.target.value
         }
         setCurrentGame(newGameState)

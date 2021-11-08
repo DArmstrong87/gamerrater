@@ -3,6 +3,7 @@ import { Route } from "react-router-dom"
 import { GameDetails } from "./components/game/GameDetails"
 import { GameForm } from "./components/game/GameForm"
 import { GameList } from "./components/game/GameList"
+import { ReviewForm } from "./components/game/ReviewForm"
 
 
 export const ApplicationViews = () => {
@@ -19,6 +20,9 @@ export const ApplicationViews = () => {
             </Route>
             <Route exact path="/games/new">
                 <GameForm />
+            </Route>
+            <Route exact path="/games/:gameId(\d+)/review">
+                <ReviewForm />
             </Route>
 
         </main>

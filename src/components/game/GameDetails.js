@@ -101,7 +101,7 @@ export const GameDetails = () => {
                 {gameImages?.map(img => {
                     return <>
                         <div className="gameImg">
-                            <img src={img.url} alt={img.url} />
+                            <img src={img.image} alt={img.image} />
                         </div>
                     </>
                 })

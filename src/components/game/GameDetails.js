@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
-import { getGame, getReviews } from "./GameManager";
+import { createRating, getGame, getGameImages, getReviews, uploadGameImg } from "./GameManager";
 import "./GameDetails.css"
 
 export const GameDetails = () => {
@@ -8,19 +8,57 @@ export const GameDetails = () => {
     const [game, setGame] = useState([])
     const [reviews, setReviews] = useState([])
     const history = useHistory()
+    const [gameImage, setImage] = useState("")
+    const [gameImages, setGameImages] = useState([])
 
     useEffect(() => {
         getGame(gameId)
             .then(game => setGame(game))
         getReviews(gameId)
             .then(reviews => setReviews(reviews))
+        getImages()
     }, [gameId])
+
+    const getImages = () => {
+        getGameImages(gameId).then(images => setGameImages(images))
+    }
+
+    const oneToTen = () => {
+        let array = []
+        for (let i = 1; i < 11; i++) array.push(i)
+        return array
+    }
+    const ratings = oneToTen()
+
+    // File reader that converts image data to Base64.
+    const getBase64 = (file, callback) => {
+        const reader = new FileReader();
+        reader.addEventListener('load', () => callback(reader.result));
+        reader.readAsDataURL(file);
+    }
+
+    // Calls file reader function and converts Base64 to string and saves it as a variable.
+    const createGameImageString = (event) => {
+        getBase64(event.target.files[0], (base64ImageString) => {
+            console.log("Base64 of file is", base64ImageString);
+            setImage(base64ImageString)
+        });
+    }
+
+    const createImage = () => {
+        const image = {
+            game_id: parseInt(gameId),
+            url: gameImage
+        }
+        uploadGameImg(image)
+            .then(getImages)
+    }
+
 
     return (<>
 
         <h2>{game.title}</h2>
 
-        <div className="avgRating">Avg rating: <b>{game.average_rating}</b></div>
         <div>Designer: {game.designer}</div>
         <div>Year released: {game.year_released}</div>
         <div>Number of players: {game.num_players}</div>
@@ -42,5 +80,37 @@ export const GameDetails = () => {
             <button onClick={() => history.push(`/games/${game.id}/review`)}>
                 Write a review</button>
         </p>
+
+        <h3>Rating: <b>{game?.average_rating}</b></h3>
+
+        <div>
+            <label htmlFor="rating">Rate this game: </label>
+            <select name="rating" defaultValue={0}
+                onChange={(e) => createRating({ rating: parseInt(e.target.value), gameId: game.id })}>
+                <option value={0} disabled>Rating</option>
+                {ratings.map(num => {
+                    return <option value={num}>{num}</option>
+                })}
+            </select>
+        </div>
+
+        <div>
+            <h3>User Uploaded Images</h3>
+            <div className="gameImages">
+
+                {gameImages?.map(img => {
+                    return <>
+                        <div className="gameImg">
+                            <img src={img.url} alt={img.url} />
+                        </div>
+                    </>
+                })
+                }
+            </div>
+            <input type="file" id="game_image" onChange={createGameImageString} />
+            <input type="hidden" name="game_id" value={game.id} />
+            <button onClick={createImage}>Upload</button>
+        </div>
+
     </>)
 }

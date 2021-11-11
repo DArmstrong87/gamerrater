@@ -6,6 +6,22 @@ export const getGames = () => {
     })
         .then(res => res.json())
 }
+export const getGamesByTerm = (searchTerm) => {
+    return fetch(`http://localhost:8000/games?q=${searchTerm}`, {
+        headers: {
+            "Authorization": `Token ${localStorage.getItem("gr_token")}`
+        }
+    })
+        .then(res => res.json())
+}
+export const orderGames = (property) => {
+    return fetch(`http://localhost:8000/games?orderby=${property}`, {
+        headers: {
+            "Authorization": `Token ${localStorage.getItem("gr_token")}`
+        }
+    })
+        .then(res => res.json())
+}
 
 export const getGame = (gameId) => {
     return fetch(`http://localhost:8000/games/${gameId}`, {
@@ -29,6 +45,16 @@ export const getCategories = () => {
 export const createGame = (game) => {
     return fetch("http://localhost:8000/games", {
         method: "POST",
+        headers: {
+            "Authorization": `Token ${localStorage.getItem("gr_token")}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(game)
+    })
+}
+export const updateGame = (game, gameId) => {
+    return fetch(`http://localhost:8000/games/${gameId}`, {
+        method: "PUT",
         headers: {
             "Authorization": `Token ${localStorage.getItem("gr_token")}`,
             "Content-Type": "application/json"

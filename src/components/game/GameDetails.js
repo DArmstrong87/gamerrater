@@ -58,6 +58,9 @@ export const GameDetails = () => {
     return (<>
 
         <h2>{game.title}</h2>
+        <div>
+            <button onClick={() => history.push(`edit/${game.id}`)}>Edit</button>
+        </div>
 
         <div>Designer: {game.designer}</div>
         <div>Year released: {game.year_released}</div>
@@ -101,7 +104,7 @@ export const GameDetails = () => {
                 {gameImages?.map(img => {
                     return <>
                         <div className="gameImg">
-                            <img src={img.image} alt={img.image} />
+                            <img src={img?.image} alt={img?.image} />
                         </div>
                     </>
                 })

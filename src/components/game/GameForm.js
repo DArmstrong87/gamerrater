@@ -1,49 +1,69 @@
 import React, { useState, useEffect } from "react"
-import { useHistory } from 'react-router-dom'
-import { createGame, getCategories } from "./GameManager"
+import { useHistory, useParams } from 'react-router-dom'
+import { createGame, getCategories, getGame, updateGame } from "./GameManager"
 
 export const GameForm = () => {
     const history = useHistory()
     const [categories, setCategories] = useState([])
-
+    const { gameId } = useParams()
     const [currentGame, setCurrentGame] = useState({
-        title: "Scrabble",
-        description: "Words and stuff",
-        designer: "Hasbro",
-        year_released: "1935",
-        num_players: 4,
-        time_to_play: 60,
-        age: 5,
         categories: []
     })
+
     console.log(currentGame)
+    useEffect(() => {
+        getCategories()
+            .then(cats => setCategories(cats))
+        if (gameId) {
+            getGame(gameId)
+                .then(game => setUpdatedGame(game))
+        }
+    }, [gameId])
+
+    const setUpdatedGame = (game) => {
+        const categories = game.categories
+        game.categories = []
+        for (const category of categories) {
+            game.categories.push(category.id)
+        }
+        setCurrentGame(game)
+    }
 
     const changeGameState = (event) => {
         const newGameState = { ...currentGame }
-        // If it's a checkbox and the current array includes the ID that was checked, then remove it from the array.
+        // If it's a category checkbox and the current array includes the ID that was checked, then remove it from the array.
         if (event.target.name === "categories" && newGameState.categories.includes(parseInt(event.target.value))) {
             const index = newGameState.categories.indexOf(parseInt(event.target.value))
             newGameState[event.target.name].splice(index, 1)
         }
-         // If it's a checkbox, add the ID to the array.
+        // If it's a category checkbox, add the ID to the array.
         else if (event.target.name === "categories") {
             newGameState[event.target.name].push(parseInt(event.target.value))
         }
-        else { // If it's not a checkbox, set the key:value pair.
+        else { // If it's not a category checkbox, set the key:value pair.
             newGameState[event.target.name] = event.target.value
         }
         setCurrentGame(newGameState)
     }
 
-    useEffect(() => {
-        getCategories()
-            .then(cats => setCategories(cats))
-    }, [])
+    const handleSubmit = (game) => {
+        // If there is a gameId, update that game. If not, create one.
+        if (gameId) {
+            updateGame(game, gameId)
+                .then(() => history.push("/games"))
+        } else {
+            createGame(game)
+                .then(() => history.push("/games"))
+        }
+    }
+
 
     return (<>
 
         <form className="gameForm">
-            <h2 className="gameForm__title">Register New Game</h2>
+            <h2 className="gameForm__title">
+                {gameId ? "Edit Game" : "Register New Game"}
+            </h2>
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="title">Title: </label>
@@ -95,26 +115,13 @@ export const GameForm = () => {
                     />
                 </div>
 
-                {/* SINGLE CATEGORY FROM DROPDOWN */}
-                {/* <div className="form-group">
-                    <label htmlFor="categories">categories: </label>
-                    <select type="text" name="categories" required autoFocus className="form-control"
-                        value={currentGame.categories}
-                        onChange={changeGameState}
-                    >
-                        <option disabled value={0}>Select categories</option>
-                        {categories.map(categories => {
-                            return <option value={categories.id}>{categories.label}</option>
-                        })}
-                    </select>
-                </div> */}
-
                 <div className="form-group">
-                    <label htmlFor="maker">categories: </label>
+                    <label htmlFor="maker">Categories: </label>
                     {
                         categories.map(category => {
                             return <>
-                                <input type="checkbox" name="categories" value={category.id}
+                                <input type="checkbox" name="categories" value={category.id} checked={
+                                    currentGame.categories.includes(category.id)}
                                     onChange={changeGameState} />
                                 <label htmlFor="category">{category.label}</label>
                             </>
@@ -138,10 +145,10 @@ export const GameForm = () => {
                         categories: currentGame.categories
                     }
 
-                    createGame(game)
-                        .then(() => history.push("/games"))
+                    handleSubmit(game)
                 }}
-                className="btn icon-create">🌟Create</button>
+                className="btn icon-create">🌟 {gameId ? "Update" : "Create"}
+            </button>
         </form>
     </>)
 }

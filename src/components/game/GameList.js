@@ -31,6 +31,8 @@ export const GameList = () => {
         }
     }
 
+    console.log(games)
+
     return (<>
 
         <h2>Games</h2>

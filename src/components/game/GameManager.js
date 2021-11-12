@@ -72,13 +72,8 @@ export const createReview = (newReview) => {
         },
         body: JSON.stringify(newReview)
     })
-        .then(response => {
-            if (response.ok) {
-                response.json()
-            }
-        }
-        )
 }
+
 export const createRating = (newRating) => {
     return fetch("http://localhost:8000/ratings", {
         method: "POST",

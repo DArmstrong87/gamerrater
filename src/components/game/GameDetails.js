@@ -12,8 +12,7 @@ export const GameDetails = () => {
     const [gameImages, setGameImages] = useState([])
 
     useEffect(() => {
-        getGame(gameId)
-            .then(game => setGame(game))
+        fetchGame()
         getReviews(gameId)
             .then(reviews => setReviews(reviews))
         getImages()
@@ -21,6 +20,10 @@ export const GameDetails = () => {
 
     const getImages = () => {
         getGameImages(gameId).then(images => setGameImages(images))
+    }
+    const fetchGame = () => {
+        getGame(gameId)
+            .then(game => setGame(game))
     }
 
     const oneToTen = () => {
@@ -85,11 +88,10 @@ export const GameDetails = () => {
         </p>
 
         <h3>Rating: <b>{game?.average_rating}</b></h3>
-
         <div>
             <label htmlFor="rating">Rate this game: </label>
             <select name="rating" defaultValue={0}
-                onChange={(e) => createRating({ rating: parseInt(e.target.value), gameId: game.id })}>
+                onChange={(e) => createRating({ rating: parseInt(e.target.value), gameId: game.id }).then(fetchGame())}>
                 <option value={0} disabled>Rating</option>
                 {ratings.map(num => {
                     return <option value={num}>{num}</option>
@@ -104,7 +106,7 @@ export const GameDetails = () => {
                 {gameImages?.map(img => {
                     return <>
                         <div className="gameImg">
-                            <img src={img?.image} alt={img?.image} />
+                            <img src={img?.image} alt={`game-${img?.image}`} />
                         </div>
                     </>
                 })

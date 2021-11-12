@@ -48,7 +48,6 @@ export const GameList = () => {
                     <option value="year_released">Year released</option>
                     <option value="time_to_play">Estimated time to play</option>
                     <option value="designer">Designer</option>
-                    <option value="rating">Rating (Desc)</option>
                 </select>
             </fieldset>
 
@@ -62,7 +61,7 @@ export const GameList = () => {
 
             {games.map(game => {
                 return <li>
-                    <Link to={`/games/${game.id}`}>{game.title}</Link>&nbsp; 
+                    <Link to={`/games/${game.id}`}>{game.title}</Link>&nbsp;
                     {display === "year_released" ?
                         `${game.year_released}` :
                         display === "designer" ?

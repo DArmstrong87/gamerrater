@@ -22,7 +22,9 @@ export const ReviewForm = () => {
             date: date,
         }
         createReview(newReview)
-            .then(history.push(`/games/${gameId}`))
+            .then(response => {
+                if (response.ok) { history.push(`/games/${gameId}`) }
+            })
     }
 
     return (<>
